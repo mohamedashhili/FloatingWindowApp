@@ -50,10 +50,44 @@ jobs:
           '        android:pathData="M30,40 L78,40 A6,6 0 0 1 84,46 L84,74 A6,6 0 0 1 78,80 L30,80 A6,6 0 0 1 24,74 L24,46 A6,6 0 0 1 30,40 Z"/>' \
           '</vector>' > app/src/main/res/drawable/ic_launcher.xml
 
-          sed -i 's#@mipmap/ic_launcher#@drawable/ic_launcher#g' app/src/main/AndroidManifest.xml
-          sed -i 's#android:foregroundServiceType="specialUse"#android:foregroundServiceType="systemAlertWindow"#g' app/src/main/AndroidManifest.xml
+          printf '%s\n' \
+          '<?xml version="1.0" encoding="utf-8"?>' \
+          '<manifest xmlns:android="http://schemas.android.com/apk/res/android">' \
+          '' \
+          '    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />' \
+          '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />' \
+          '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />' \
+          '' \
+          '    <application' \
+          '        android:allowBackup="true"' \
+          '        android:icon="@drawable/ic_launcher"' \
+          '        android:label="@string/app_name"' \
+          '        android:theme="@style/Theme.FloatingWindow"' \
+          '        android:supportsRtl="true">' \
+          '' \
+          '        <activity' \
+          '            android:name=".MainActivity"' \
+          '            android:exported="true">' \
+          '            <intent-filter>' \
+          '                <action android:name="android.intent.action.MAIN" />' \
+          '                <category android:name="android.intent.category.LAUNCHER" />' \
+          '            </intent-filter>' \
+          '        </activity>' \
+          '' \
+          '        <service' \
+          '            android:name=".FloatingWindowService"' \
+          '            android:foregroundServiceType="specialUse"' \
+          '            android:exported="false">' \
+          '            <property' \
+          '                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"' \
+          '                android:value="overlay_window" />' \
+          '        </service>' \
+          '' \
+          '    </application>' \
+          '' \
+          '</manifest>' > app/src/main/AndroidManifest.xml
 
-          echo "----- Manifest after patch -----"
+          echo "----- Final Manifest -----"
           cat app/src/main/AndroidManifest.xml
 
           gradle assembleDebug
