@@ -51,6 +51,10 @@ jobs:
           '</vector>' > app/src/main/res/drawable/ic_launcher.xml
 
           sed -i 's#@mipmap/ic_launcher#@drawable/ic_launcher#g' app/src/main/AndroidManifest.xml
+          sed -i 's#android:foregroundServiceType="specialUse"#android:foregroundServiceType="systemAlertWindow"#g' app/src/main/AndroidManifest.xml
+
+          echo "----- Manifest after patch -----"
+          cat app/src/main/AndroidManifest.xml
 
           gradle assembleDebug
           mkdir -p /tmp/output
